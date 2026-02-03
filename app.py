@@ -112,7 +112,12 @@ if not df_filtrado.empty:
     
     # --- Media de cargos e senioridade --- #
     colunaGraficoDisco, colunaGrafico_MediaPorSenioridade, colunaSideBar = st.columns([5,5,3])
-    
+    mapa_cores = {
+    "junior": "#00fff2",
+    "pleno": "#006fd6",
+    "senior": "#000d7e",
+    "executivo": "#10011f"
+}
     # coluna dos cargos #
     with colunaSideBar:
         cargosmaisFrequentes = df_filtrado['cargo'].value_counts().nlargest(maioresRegistros).index.tolist()
@@ -129,11 +134,12 @@ if not df_filtrado.empty:
             df_relacao_senioridade_cargo,
             names="senioridade",         
             values="contagem",     
-            hole=0.5,               
+            hole=0.5, 
+            color="senioridade",                            
             title="Distribuição de senioridade por cargos",
-
+            color_discrete_map=mapa_cores
         )
-        graficoPizza.update_traces(textinfo='percent+label')
+        graficoPizza.update_traces(textinfo='label+percent')
         st.plotly_chart(graficoPizza, use_container_width=True)
     
     #grafico de media salarial de determinados cargos divididas por senioridade 
@@ -144,13 +150,14 @@ if not df_filtrado.empty:
             x='senioridade',
             y='usd',
             color='senioridade',
-            color_discrete_sequence=px.colors.qualitative.D3,
+            color_discrete_map=mapa_cores,
             title="Média salarial por senioridade",
-            labels={'usd': "Média Salarial ", 'senioridade':'Senioridade'}
+            labels={'usd': "Média Salarial ", 'senioridade':'Senioridade'},
+            text_auto='.2f'   
         )
      
 
-
+        graficoMediaPorSenioridade.update_layout(bargap=0.01)
         st.plotly_chart(graficoMediaPorSenioridade, use_container_width=True)
     st.markdown('---')
     
@@ -176,4 +183,9 @@ st.dataframe(df_filtrado)
         
         
         
+        
+        
+        
+        
+
         
